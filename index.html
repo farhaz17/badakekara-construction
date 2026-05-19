@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Badakekara Construction — Building the Future</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0a1628;
+  --charcoal:#1a2332;
+  --gold:#c9a84c;
+  --gold-light:#e8c56d;
+  --gold-dark:#a8893f;
+  --white:#ffffff;
+  --gray:#a0aec0;
+  --card:#111d2e;
+  --border:rgba(201,168,76,.2);
+  --t:all .3s ease;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Poppins',sans-serif;background:var(--navy);color:var(--white);overflow-x:hidden;line-height:1.6}
+img{max-width:100%;display:block}
+a{text-decoration:none;color:inherit}
+ul{list-style:none}
+
+/* UTIL */
+.container{width:100%;max-width:1200px;margin:0 auto;padding:0 24px}
+.section{padding:100px 0}
+.section-label{font-size:.75rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
+.section-title{font-size:clamp(1.9rem,4vw,3rem);font-weight:800;line-height:1.15;margin-bottom:18px}
+.section-title span{color:var(--gold)}
+.section-desc{font-size:.95rem;color:var(--gray);line-height:1.85}
+
+.btn-gold{display:inline-block;padding:14px 32px;background:var(--gold);color:var(--navy);font-weight:700;font-size:.875rem;border-radius:4px;border:2px solid var(--gold);transition:var(--t);letter-spacing:.04em;cursor:pointer}
+.btn-gold:hover{background:var(--gold-light);border-color:var(--gold-light);transform:translateY(-2px)}
+.btn-outline{display:inline-block;padding:14px 32px;background:transparent;color:var(--white);font-weight:700;font-size:.875rem;border-radius:4px;border:2px solid rgba(255,255,255,.5);transition:var(--t);letter-spacing:.04em;cursor:pointer}
+.btn-outline:hover{border-color:var(--white);background:rgba(255,255,255,.08)}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(36px);transition:opacity .7s ease,transform .7s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}.d4{transition-delay:.4s}
+
+/* ===== HEADER ===== */
+#hdr{position:fixed;top:0;left:0;right:0;z-index:1000;padding:22px 0;transition:all .4s ease}
+#hdr.scrolled{padding:12px 0;background:rgba(10,22,40,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);box-shadow:0 4px 30px rgba(0,0,0,.3)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;gap:20px}
+.logo-wrap{display:flex;flex-direction:column;line-height:1}
+.logo-main{font-size:1.45rem;font-weight:900;color:var(--gold);letter-spacing:.06em}
+.logo-sub{font-size:.55rem;font-weight:600;color:var(--white);letter-spacing:.25em;text-transform:uppercase;margin-top:2px}
+.nav-links{display:flex;align-items:center;gap:34px}
+.nav-links a{font-size:.85rem;font-weight:500;color:rgba(255,255,255,.85);transition:var(--t);position:relative}
+.nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:2px;background:var(--gold);transition:width .3s ease}
+.nav-links a:hover{color:var(--gold)}
+.nav-links a:hover::after{width:100%}
+.nav-right{display:flex;align-items:center;gap:18px}
+.nav-phone{font-size:.82rem;font-weight:600;color:var(--white);display:flex;align-items:center;gap:7px;white-space:nowrap}
+.nav-phone svg{color:var(--gold);flex-shrink:0}
+.nav-cta{padding:10px 22px;background:var(--gold);color:var(--navy);font-weight:700;font-size:.78rem;border-radius:4px;transition:var(--t);letter-spacing:.04em;white-space:nowrap}
+.nav-cta:hover{background:var(--gold-light);transform:translateY(-1px)}
+
+/* Hamburger */
+.ham{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;background:none;border:none}
+.ham span{display:block;width:24px;height:2px;background:var(--white);transition:var(--t);border-radius:2px}
+.ham.active span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.ham.active span:nth-child(2){opacity:0}
+.ham.active span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+/* Mobile Menu */
+.mob-menu{position:fixed;inset:0;background:var(--navy);z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .35s ease,visibility .35s ease}
+.mob-menu.open{opacity:1;visibility:visible;pointer-events:all}
+.mob-menu a{font-size:1.4rem;font-weight:700;color:var(--white);transition:var(--t)}
+.mob-menu a:hover{color:var(--gold)}
+.mob-close{position:absolute;top:24px;right:24px;font-size:2.2rem;cursor:pointer;color:var(--white);background:none;border:none;font-family:inherit;line-height:1}
+
+/* ===== HERO ===== */
+#hero{position:relative;height:100vh;min-height:680px;display:flex;align-items:center;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=1920&q=80') center/cover;transform:scale(1.06);animation:hscale 9s ease-out forwards}
+@keyframes hscale{to{transform:scale(1)}}
+.hero-ov{position:absolute;inset:0;background:linear-gradient(120deg,rgba(10,22,40,.93) 0%,rgba(10,22,40,.68) 55%,rgba(10,22,40,.45) 100%)}
+.hero-body{position:relative;z-index:2;max-width:780px}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:7px 18px;border:1px solid var(--gold);border-radius:50px;font-size:.72rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-bottom:26px;animation:fup .8s ease both}
+.hero-badge .dot{width:6px;height:6px;background:var(--gold);border-radius:50%;animation:blink 1.6s ease infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.hero-title{font-size:clamp(2.4rem,5.5vw,4.8rem);font-weight:900;line-height:1.08;margin-bottom:22px;animation:fup .8s .2s ease both}
+.hero-title .g{color:var(--gold)}
+.hero-sub{font-size:clamp(.95rem,1.8vw,1.1rem);color:rgba(255,255,255,.75);max-width:560px;line-height:1.85;margin-bottom:38px;animation:fup .8s .4s ease both}
+.hero-btns{display:flex;gap:14px;flex-wrap:wrap;animation:fup .8s .6s ease both}
+.hero-scroll{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:7px;z-index:2;animation:fup .8s 1s ease both}
+.hero-scroll span{font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.45)}
+.scroll-line{width:1px;height:38px;background:linear-gradient(to bottom,var(--gold),transparent);animation:sline 1.6s ease infinite}
+@keyframes sline{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform:scaleY(1);transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+@keyframes fup{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+
+/* ===== ABOUT ===== */
+#about{background:var(--charcoal)}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.about-tagline{font-size:1.35rem;font-weight:700;color:var(--gold);margin-bottom:18px;line-height:1.35}
+.about-text{color:var(--gray);line-height:1.9;margin-bottom:36px}
+.about-features{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.feat{display:flex;align-items:center;gap:10px;font-size:.875rem;font-weight:500}
+.feat-icon{width:22px;height:22px;background:rgba(201,168,76,.12);border:1px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--gold);font-size:.65rem;font-weight:700}
+.about-img-wrap{position:relative}
+.about-img{width:100%;height:490px;object-fit:cover;border-radius:8px}
+.about-badge{position:absolute;bottom:-18px;left:-18px;background:var(--gold);color:var(--navy);padding:22px 26px;border-radius:8px;text-align:center;box-shadow:0 10px 40px rgba(0,0,0,.35)}
+.about-badge .bn{font-size:2.4rem;font-weight:900;display:block;line-height:1}
+.about-badge .bl{font-size:.7rem;font-weight:700;letter-spacing:.04em}
+
+/* ===== STATS ===== */
+#stats{padding:80px 0;background:linear-gradient(120deg,#7a5c10,#c9a84c,#7a5c10);position:relative;overflow:hidden}
+#stats::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 12px,rgba(0,0,0,.04) 12px,rgba(0,0,0,.04) 24px)}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;position:relative}
+.stat{text-align:center;padding:20px 16px}
+.stat+.stat{border-left:1px solid rgba(10,22,40,.18)}
+.stat-num{font-size:clamp(2.5rem,5vw,3.8rem);font-weight:900;color:var(--navy);line-height:1;margin-bottom:6px}
+.stat-lbl{font-size:.82rem;font-weight:700;color:rgba(10,22,40,.7);text-transform:uppercase;letter-spacing:.06em}
+
+/* ===== VISION & MISSION ===== */
+#vision{background:var(--navy)}
+.vm-head{text-align:center;margin-bottom:56px}
+.vm-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+.vm-card{background:var(--card);border-radius:8px;padding:46px;border-left:4px solid var(--gold);position:relative;overflow:hidden;transition:var(--t)}
+.vm-card::before{content:'';position:absolute;top:0;right:0;width:180px;height:180px;background:radial-gradient(circle,rgba(201,168,76,.07) 0%,transparent 70%)}
+.vm-card:hover{transform:translateY(-4px);box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.vm-icon{width:54px;height:54px;background:rgba(201,168,76,.1);border:1px solid var(--gold);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:22px}
+.vm-title{font-size:1.35rem;font-weight:800;color:var(--gold);margin-bottom:14px}
+.vm-text{color:var(--gray);line-height:1.85;font-size:.93rem}
+
+/* ===== PROJECTS ===== */
+#projects{background:var(--charcoal)}
+.proj-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:56px}
+.view-all{font-size:.85rem;font-weight:700;color:var(--gold);transition:var(--t);white-space:nowrap}
+.view-all:hover{letter-spacing:.05em}
+.proj-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
+.proj-card{background:var(--card);border-radius:8px;overflow:hidden;border:1px solid rgba(255,255,255,.06);transition:all .4s ease}
+.proj-card:hover{transform:translateY(-6px);box-shadow:0 24px 60px rgba(0,0,0,.4);border-color:var(--gold)}
+.proj-img-wrap{position:relative;overflow:hidden;height:215px}
+.proj-img{width:100%;height:100%;object-fit:cover;transition:transform .5s ease}
+.proj-card:hover .proj-img{transform:scale(1.07)}
+.proj-badge{position:absolute;top:14px;left:14px;padding:5px 14px;background:var(--gold);color:var(--navy);font-size:.68rem;font-weight:700;border-radius:50px;letter-spacing:.04em;text-transform:uppercase}
+.proj-body{padding:22px}
+.proj-name{font-size:.95rem;font-weight:700;margin-bottom:10px;line-height:1.45;color:var(--white)}
+.proj-val{display:flex;align-items:center;gap:6px;font-size:.85rem;color:var(--gold);font-weight:600}
+
+/* ===== TEAM ===== */
+#team{background:var(--navy)}
+.team-head{text-align:center;margin-bottom:56px}
+.team-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+.team-card{background:var(--card);border-radius:8px;padding:38px 28px;text-align:center;border-top:3px solid var(--gold);transition:var(--t)}
+.team-card:hover{transform:translateY(-6px);box-shadow:0 20px 50px rgba(0,0,0,.3)}
+.team-av-wrap{width:115px;height:115px;border-radius:50%;overflow:hidden;margin:0 auto 18px;border:3px solid var(--gold);padding:3px}
+.team-av{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.team-name{font-size:1.05rem;font-weight:700;margin-bottom:5px}
+.team-role{font-size:.75rem;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.09em}
+
+/* ===== CEO ===== */
+#ceo{background:var(--charcoal)}
+.ceo-grid{display:grid;grid-template-columns:1fr 2.2fr;gap:80px;align-items:center}
+.ceo-img-wrap{position:relative;display:flex;justify-content:center}
+.ceo-ring{position:absolute;inset:-18px;border-radius:50%;border:1px dashed rgba(201,168,76,.3);animation:spin 22s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ceo-av{width:240px;height:240px;border-radius:50%;object-fit:cover;border:4px solid var(--gold)}
+.ceo-body{position:relative}
+.quote-mark{font-size:7rem;line-height:.8;color:var(--gold);opacity:.18;font-family:Georgia,serif;position:absolute;top:-14px;left:-18px;pointer-events:none}
+.ceo-msg{font-size:1.05rem;font-style:italic;color:rgba(255,255,255,.88);line-height:1.95;margin-bottom:28px;position:relative;z-index:1}
+.ceo-sig{display:flex;align-items:center;gap:14px}
+.sig-line{width:46px;height:2px;background:var(--gold);flex-shrink:0}
+.sig-name{font-weight:700;color:var(--gold);font-size:.95rem}
+.sig-title{font-size:.78rem;color:var(--gray);margin-top:2px}
+
+/* ===== FAQ ===== */
+#faq{background:var(--navy)}
+.faq-head{text-align:center;margin-bottom:56px}
+.faq-list{max-width:800px;margin:0 auto}
+.faq-item{background:var(--card);border:1px solid rgba(255,255,255,.06);border-radius:8px;margin-bottom:12px;overflow:hidden;transition:border-color .3s ease}
+.faq-item.open{border-color:var(--gold)}
+.faq-q{display:flex;align-items:center;justify-content:space-between;padding:22px 26px;cursor:pointer;user-select:none}
+.faq-qt{font-size:.97rem;font-weight:600;flex:1;padding-right:18px;line-height:1.4}
+.faq-arr{width:32px;height:32px;background:rgba(201,168,76,.1);border:1px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--gold);font-size:.75rem;transition:all .3s ease}
+.faq-item.open .faq-arr{background:var(--gold);color:var(--navy);transform:rotate(180deg)}
+.faq-ans{max-height:0;overflow:hidden;transition:max-height .4s ease}
+.faq-ans-inner{padding:0 26px 22px;color:var(--gray);line-height:1.85;font-size:.92rem}
+
+/* ===== CONTACT ===== */
+#contact{background:var(--charcoal)}
+.contact-head{text-align:center;margin-bottom:56px}
+.contact-grid{display:grid;grid-template-columns:1fr 1.6fr;gap:80px;align-items:start}
+.contact-info-title{font-size:1.1rem;font-weight:700;color:var(--gold);margin-bottom:24px}
+.office-block{margin-bottom:28px}
+.office-name{font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:7px}
+.office-addr{color:var(--gray);line-height:1.75;font-size:.88rem}
+.c-detail{display:flex;align-items:center;gap:12px;margin-bottom:14px;color:var(--gray);font-size:.88rem}
+.c-icon{width:36px;height:36px;background:rgba(201,168,76,.1);border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.85rem}
+.form-group{margin-bottom:18px}
+.form-group label{display:block;font-size:.78rem;font-weight:600;color:var(--gray);margin-bottom:7px;letter-spacing:.04em;text-transform:uppercase}
+.form-ctrl{width:100%;padding:13px 17px;background:var(--card);border:1px solid rgba(255,255,255,.1);border-radius:6px;color:var(--white);font-family:'Poppins',sans-serif;font-size:.9rem;outline:none;transition:border-color .3s ease}
+.form-ctrl:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,.1)}
+.form-ctrl::placeholder{color:rgba(160,174,192,.35)}
+textarea.form-ctrl{resize:vertical;min-height:120px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.submit-btn{width:100%;padding:15px;background:var(--gold);color:var(--navy);font-weight:700;font-size:.93rem;border:none;border-radius:6px;cursor:pointer;font-family:'Poppins',sans-serif;transition:var(--t);letter-spacing:.04em}
+.submit-btn:hover{background:var(--gold-light);transform:translateY(-2px)}
+.form-ok{display:none;text-align:center;padding:36px 24px;background:rgba(201,168,76,.08);border:1px solid var(--gold);border-radius:8px}
+.form-ok-icon{font-size:3rem;margin-bottom:10px}
+
+/* ===== FOOTER ===== */
+#footer{background:#060e1a;padding:80px 0 0}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1.5fr;gap:56px;margin-bottom:56px}
+.fl-main{font-size:1.7rem;font-weight:900;color:var(--gold);letter-spacing:.06em}
+.fl-sub{font-size:.58rem;letter-spacing:.25em;color:var(--white);margin-bottom:14px}
+.fl-desc{color:var(--gray);font-size:.85rem;line-height:1.85;margin-bottom:22px}
+.socials{display:flex;gap:10px}
+.s-icon{width:37px;height:37px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.9rem;transition:var(--t);cursor:pointer}
+.s-icon:hover{background:var(--gold);border-color:var(--gold);color:var(--navy)}
+.f-heading{font-size:.78rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:22px}
+.f-links{display:flex;flex-direction:column;gap:11px}
+.f-links a{font-size:.85rem;color:var(--gray);transition:var(--t);display:flex;align-items:center}
+.f-links a::before{content:'→';color:var(--gold);font-size:.65rem;margin-right:0;opacity:0;transition:var(--t);width:0;overflow:hidden}
+.f-links a:hover{color:var(--white);padding-left:14px}
+.f-links a:hover::before{opacity:1;width:16px;margin-right:2px}
+.f-ci{display:flex;gap:11px;margin-bottom:14px;font-size:.85rem;color:var(--gray)}
+.f-ci-icon{color:var(--gold);margin-top:2px;flex-shrink:0}
+.f-divider{border:none;border-top:1px solid rgba(255,255,255,.06)}
+.f-bottom{padding:22px 0;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.f-copy{font-size:.78rem;color:var(--gray)}
+.f-copy span{color:var(--gold)}
+
+/* BACK TO TOP */
+#btt{position:fixed;bottom:30px;right:30px;width:42px;height:42px;background:var(--gold);color:var(--navy);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;cursor:pointer;opacity:0;pointer-events:none;transition:var(--t);z-index:999;box-shadow:0 4px 20px rgba(201,168,76,.4);font-weight:700}
+#btt.show{opacity:1;pointer-events:all}
+#btt:hover{background:var(--gold-light);transform:translateY(-3px)}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:1024px){
+  .about-grid{grid-template-columns:1fr;gap:48px}
+  .about-badge{left:0;bottom:-16px}
+  .ceo-grid{grid-template-columns:1fr;gap:48px}
+  .ceo-img-wrap{margin-bottom:20px}
+}
+@media(max-width:900px){
+  .proj-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:768px){
+  .nav-links,.nav-right{display:none}
+  .ham{display:flex}
+  .section{padding:68px 0}
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+  .stat+.stat{border-left:none}
+  .stat:nth-child(odd){border-right:1px solid rgba(10,22,40,.18)}
+  .vm-grid{grid-template-columns:1fr}
+  .vm-card{padding:32px}
+  .proj-grid{grid-template-columns:1fr}
+  .team-grid{grid-template-columns:1fr;max-width:340px;margin:0 auto}
+  .contact-grid{grid-template-columns:1fr;gap:48px}
+  .form-row{grid-template-columns:1fr}
+  .footer-grid{grid-template-columns:1fr;gap:36px}
+  .f-bottom{flex-direction:column;text-align:center}
+  .proj-header{flex-direction:column;align-items:flex-start;gap:14px}
+  .hero-btns{flex-direction:column}
+  .btn-gold,.btn-outline{text-align:center}
+}
+@media(max-width:480px){
+  .about-features{grid-template-columns:1fr}
+  .ceo-av{width:180px;height:180px}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header id="hdr">
+  <div class="container">
+    <nav class="nav-inner">
+      <a href="#hero" class="logo-wrap">
+        <span class="logo-main">BADAKEKARA</span>
+        <span class="logo-sub">Construction</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#hero">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#team">Team</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <div class="nav-right">
+        <span class="nav-phone">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/></svg>
+          +91 98765 43210
+        </span>
+        <a href="#contact" class="nav-cta">Get Quote</a>
+      </div>
+      <button class="ham" id="ham" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<!-- MOBILE MENU -->
+<div class="mob-menu" id="mobMenu">
+  <button class="mob-close" id="mobClose">&times;</button>
+  <a href="#hero" class="mob-link">Home</a>
+  <a href="#about" class="mob-link">About</a>
+  <a href="#projects" class="mob-link">Projects</a>
+  <a href="#team" class="mob-link">Team</a>
+  <a href="#faq" class="mob-link">FAQ</a>
+  <a href="#contact" class="mob-link">Contact</a>
+  <a href="#contact" class="btn-gold" style="margin-top:12px">Get Quote</a>
+</div>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-ov"></div>
+  <div class="container">
+    <div class="hero-body">
+      <div class="hero-badge"><span class="dot"></span> Trusted Civil Contractors Since 2004</div>
+      <h1 class="hero-title">Building the <span class="g">Future,</span><br>One Structure at a Time</h1>
+      <p class="hero-sub">Badakekara Construction — Trusted civil contractors delivering roads, bridges, and infrastructure across the region. Precision engineering. On-time delivery.</p>
+      <div class="hero-btns">
+        <a href="#projects" class="btn-gold">View Our Projects</a>
+        <a href="#contact" class="btn-outline">Contact Us</a>
+      </div>
+    </div>
+  </div>
+  <div class="hero-scroll"><span>Scroll</span><div class="scroll-line"></div></div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" class="section">
+  <div class="container">
+    <div class="about-grid">
+      <div>
+        <p class="section-label reveal">Who We Are</p>
+        <h2 class="section-title reveal d1">20+ Years of Experience<br>in Civil <span>Contracting</span></h2>
+        <p class="about-tagline reveal d2">Building with Precision. Delivering with Trust.</p>
+        <p class="about-text reveal d3">Badakekara Construction is a premier civil contracting firm with over two decades of expertise in large-scale infrastructure. From national highways to major bridges and irrigation systems, we combine engineering excellence with an unwavering commitment to quality — delivering projects that stand the test of time across India.</p>
+        <div class="about-features reveal d4">
+          <div class="feat"><div class="feat-icon">✓</div><span>Leading Infrastructure</span></div>
+          <div class="feat"><div class="feat-icon">✓</div><span>Powerful Machinery</span></div>
+          <div class="feat"><div class="feat-icon">✓</div><span>Expert Manpower</span></div>
+          <div class="feat"><div class="feat-icon">✓</div><span>On-Time Delivery</span></div>
+        </div>
+      </div>
+      <div class="about-img-wrap reveal">
+        <img src="https://images.unsplash.com/photo-1590674899484-d5640e854abe?auto=format&fit=crop&w=800&q=80" alt="Construction site" class="about-img">
+        <div class="about-badge">
+          <span class="bn">20+</span>
+          <span class="bl">Years of<br>Excellence</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section id="stats">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat reveal">
+        <div class="stat-num"><span class="counter" data-target="20">0</span>+</div>
+        <div class="stat-lbl">Years Experience</div>
+      </div>
+      <div class="stat reveal d1">
+        <div class="stat-num"><span class="counter" data-target="150">0</span>+</div>
+        <div class="stat-lbl">Projects Completed</div>
+      </div>
+      <div class="stat reveal d2">
+        <div class="stat-num"><span class="counter" data-target="500">0</span>+</div>
+        <div class="stat-lbl">Skilled Workforce</div>
+      </div>
+      <div class="stat reveal d3">
+        <div class="stat-num"><span class="counter" data-target="10">0</span>+</div>
+        <div class="stat-lbl">States Active</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VISION & MISSION -->
+<section id="vision" class="section">
+  <div class="container">
+    <div class="vm-head reveal">
+      <p class="section-label">Our Purpose</p>
+      <h2 class="section-title">Vision &amp; <span>Mission</span></h2>
+    </div>
+    <div class="vm-grid">
+      <div class="vm-card reveal">
+        <div class="vm-icon">🎯</div>
+        <div class="vm-title">Our Vision</div>
+        <p class="vm-text">To be the most trusted infrastructure company in India — pioneering sustainable construction that builds a better future. We envision transforming landscapes through world-class engineering and responsible innovation that uplifts communities for generations.</p>
+      </div>
+      <div class="vm-card reveal d2">
+        <div class="vm-icon">🏗️</div>
+        <div class="vm-title">Our Mission</div>
+        <p class="vm-text">To deliver exceptional civil engineering projects with precision, safety, and integrity — completing every project on time and within budget. We are committed to empowering communities through infrastructure built to last and a workforce trained to lead.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects" class="section">
+  <div class="container">
+    <div class="proj-header">
+      <div>
+        <p class="section-label reveal">Portfolio</p>
+        <h2 class="section-title reveal d1">Our <span>Projects</span></h2>
+      </div>
+      <a href="#contact" class="view-all reveal">See All Projects →</a>
+    </div>
+    <div class="proj-grid">
+      <div class="proj-card reveal">
+        <div class="proj-img-wrap">
+          <img src="https://images.unsplash.com/photo-1545670723-196ed0954986?auto=format&fit=crop&w=600&h=280&q=80" alt="Road" class="proj-img">
+          <span class="proj-badge">Road</span>
+        </div>
+        <div class="proj-body">
+          <h3 class="proj-name">Construction of Kuttiyadi Bypass in Kozhikode District</h3>
+          <div class="proj-val">₹ Amount in crore : 25.50</div>
+        </div>
+      </div>
+      <div class="proj-card reveal d1">
+        <div class="proj-img-wrap">
+          <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=600&h=280&q=80" alt="Bridge" class="proj-img">
+          <span class="proj-badge">Bridge</span>
+        </div>
+        <div class="proj-body">
+          <h3 class="proj-name">Panampalam Bridge — PWD003-09: Construction across Tirur Puzha, Malappuram</h3>
+          <div class="proj-val">₹ Amount in crore : 6.55</div>
+        </div>
+      </div>
+      <div class="proj-card reveal d2">
+        <div class="proj-img-wrap">
+          <img src="https://images.unsplash.com/photo-1486325212027-8081e485255e?auto=format&fit=crop&w=600&h=280&q=80" alt="Infrastructure" class="proj-img">
+          <span class="proj-badge">Infrastructure</span>
+        </div>
+        <div class="proj-body">
+          <h3 class="proj-name">Four-Lane National Highway Corridor Expansion — Phase III</h3>
+          <div class="proj-val">₹ Amount in crore : 142.00</div>
+        </div>
+      </div>
+      <div class="proj-card reveal">
+        <div class="proj-img-wrap">
+          <img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=600&h=280&q=80" alt="Highway" class="proj-img">
+          <span class="proj-badge">Road</span>
+        </div>
+        <div class="proj-body">
+          <h3 class="proj-name">State Highway Widening and Improvement Works — Phase II</h3>
+          <div class="proj-val">₹ Amount in crore : 38.75</div>
+        </div>
+      </div>
+      <div class="proj-card reveal d1">
+        <div class="proj-img-wrap">
+          <img src="https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=600&h=280&q=80" alt="Dam" class="proj-img">
+          <span class="proj-badge">Dam</span>
+        </div>
+        <div class="proj-body">
+          <h3 class="proj-name">Irrigation Dam Renovation and Strengthening — River Valley Project</h3>
+          <div class="proj-val">₹ Amount in crore : 89.20</div>
+        </div>
+      </div>
+      <div class="proj-card reveal d2">
+        <div class="proj-img-wrap">
+          <img src="https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?auto=format&fit=crop&w=600&h=280&q=80" alt="Urban" class="proj-img">
+          <span class="proj-badge">Urban</span>
+        </div>
+        <div class="proj-body">
+          <h3 class="proj-name">Urban Smart City Road Network Development — Integrated Phase</h3>
+          <div class="proj-val">₹ Amount in crore : 55.30</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section id="team" class="section">
+  <div class="container">
+    <div class="team-head">
+      <p class="section-label reveal">Leadership</p>
+      <h2 class="section-title reveal d1">Meet Our <span>Team</span></h2>
+      <p class="section-desc reveal d2" style="max-width:520px;margin:0 auto;text-align:center">Driven by decades of expertise, our leadership brings unmatched knowledge in civil engineering and project execution.</p>
+    </div>
+    <div class="team-grid">
+      <div class="team-card reveal">
+        <div class="team-av-wrap">
+          <img src="https://i.pravatar.cc/150?img=68" alt="Managing Director" class="team-av">
+        </div>
+        <h3 class="team-name">Mohammed Badakekara</h3>
+        <p class="team-role">Managing Director</p>
+      </div>
+      <div class="team-card reveal d1">
+        <div class="team-av-wrap">
+          <img src="https://i.pravatar.cc/150?img=52" alt="Director" class="team-av">
+        </div>
+        <h3 class="team-name">Ahmed Badakekara</h3>
+        <p class="team-role">Director</p>
+      </div>
+      <div class="team-card reveal d2">
+        <div class="team-av-wrap">
+          <img src="https://i.pravatar.cc/150?img=12" alt="CEO" class="team-av">
+        </div>
+        <h3 class="team-name">Rashid Badakekara</h3>
+        <p class="team-role">Chief Executive Officer</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CEO MESSAGE -->
+<section id="ceo" class="section">
+  <div class="container">
+    <div class="ceo-grid">
+      <div class="ceo-img-wrap reveal">
+        <div class="ceo-ring"></div>
+        <img src="https://i.pravatar.cc/300?img=12" alt="CEO Rashid Badakekara" class="ceo-av">
+      </div>
+      <div class="ceo-body reveal d2">
+        <p class="section-label">From the CEO's Desk</p>
+        <h2 class="section-title" style="font-size:clamp(1.6rem,3vw,2.2rem)">A Message from<br>Our <span>Leadership</span></h2>
+        <div style="position:relative">
+          <span class="quote-mark">"</span>
+          <p class="ceo-msg">At Badakekara Construction, we do not merely build structures — we build the arteries of progress. Every road we lay, every bridge we erect, and every dam we construct is a testament to our commitment to quality, safety, and excellence. Our two decades of journey have been defined by the trust placed in us by our clients and the communities we serve. We continue to invest in cutting-edge machinery, world-class talent, and sustainable practices to ensure that every project we undertake leaves a lasting, positive impact. The future of India's infrastructure runs through our hands, and we carry that responsibility with the utmost pride and dedication.</p>
+        </div>
+        <div class="ceo-sig">
+          <div class="sig-line"></div>
+          <div>
+            <div class="sig-name">Rashid Badakekara</div>
+            <div class="sig-title">Chief Executive Officer, Badakekara Construction</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq" class="section">
+  <div class="container">
+    <div class="faq-head">
+      <p class="section-label reveal">FAQ</p>
+      <h2 class="section-title reveal d1">Frequently Asked <span>Questions</span></h2>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item reveal">
+        <div class="faq-q">
+          <span class="faq-qt">How does Badakekara Construction ensure safety and sustainability?</span>
+          <span class="faq-arr">▼</span>
+        </div>
+        <div class="faq-ans"><div class="faq-ans-inner">We maintain rigorous safety protocols across all project sites, adhering to IS codes and international standards. Our dedicated HSE team conducts daily inspections, mandatory training, and implements sustainable practices including eco-friendly materials, waste reduction, and minimal environmental disruption. Every project undergoes a comprehensive environmental impact assessment before commencement.</div></div>
+      </div>
+      <div class="faq-item reveal d1">
+        <div class="faq-q">
+          <span class="faq-qt">What types of projects do you specialize in?</span>
+          <span class="faq-arr">▼</span>
+        </div>
+        <div class="faq-ans"><div class="faq-ans-inner">We specialize in a broad spectrum of civil engineering works — national and state highways, major and minor bridges, culverts, flyovers, irrigation dams, canals, drainage systems, and urban road networks. We have extensive experience with government bodies including NHAI, PWD, KIIFB, and various state infrastructure development corporations.</div></div>
+      </div>
+      <div class="faq-item reveal d2">
+        <div class="faq-q">
+          <span class="faq-qt">How do you ensure timely delivery of projects?</span>
+          <span class="faq-arr">▼</span>
+        </div>
+        <div class="faq-ans"><div class="faq-ans-inner">We deploy advanced project management systems with milestone-based tracking and regular progress reporting. Our fleet of modern heavy machinery ensures uninterrupted workflow, and our experienced project managers proactively identify and resolve bottlenecks. A dedicated procurement team ensures materials are always available, and our skilled workforce is trained to perform efficiently in all conditions.</div></div>
+      </div>
+      <div class="faq-item reveal d3">
+        <div class="faq-q">
+          <span class="faq-qt">How can I get in touch for a new project?</span>
+          <span class="faq-arr">▼</span>
+        </div>
+        <div class="faq-ans"><div class="faq-ans-inner">Reach us through multiple channels: fill out the contact form below, call +91 98765 43210, or email info@badakekaraconstruction.com. Our business development team responds within 24 hours to discuss requirements, provide an initial consultation, and outline our approach. We welcome government tenders and private project inquiries alike.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="section">
+  <div class="container">
+    <div class="contact-head">
+      <p class="section-label reveal">Get In Touch</p>
+      <h2 class="section-title reveal d1">Contact <span>Us</span></h2>
+      <p class="section-desc reveal d2" style="max-width:480px;margin:0 auto;text-align:center">Have a project in mind? Let's build something great together.</p>
+    </div>
+    <div class="contact-grid">
+      <div class="reveal">
+        <p class="contact-info-title">Our Offices</p>
+        <div class="office-block">
+          <p class="office-name">Head Office</p>
+          <p class="office-addr">Badakekara House, NH Bypass,<br>Kozhikode, Kerala — 673001<br>India</p>
+        </div>
+        <div class="office-block">
+          <p class="office-name">Branch Office</p>
+          <p class="office-addr">Plot No. 24, Industrial Area,<br>Malappuram, Kerala — 676505<br>India</p>
+        </div>
+        <div class="c-detail"><div class="c-icon">📞</div><div><div>+91 98765 43210</div><div style="font-size:.75rem;opacity:.55;margin-top:2px">Mon–Sat, 9am–6pm IST</div></div></div>
+        <div class="c-detail"><div class="c-icon">✉️</div><span>info@badakekaraconstruction.com</span></div>
+        <div class="c-detail"><div class="c-icon">🌐</div><span>www.badakekaraconstruction.com</span></div>
+      </div>
+      <div class="reveal d2">
+        <form id="cForm">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Full Name</label>
+              <input type="text" class="form-ctrl" placeholder="John Doe" required>
+            </div>
+            <div class="form-group">
+              <label>Email Address</label>
+              <input type="email" class="form-ctrl" placeholder="john@example.com" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Subject</label>
+            <input type="text" class="form-ctrl" placeholder="Project Inquiry — Road Construction" required>
+          </div>
+          <div class="form-group">
+            <label>Message</label>
+            <textarea class="form-ctrl" placeholder="Tell us about your project requirements, timeline, and location…"></textarea>
+          </div>
+          <button type="submit" class="submit-btn">Send Message →</button>
+        </form>
+        <div class="form-ok" id="fOk">
+          <div class="form-ok-icon">✅</div>
+          <h3 style="color:var(--gold);margin-bottom:8px">Message Sent!</h3>
+          <p style="color:var(--gray);font-size:.9rem">Thank you for reaching out. Our team will contact you within 24 hours.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer id="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="fl-main">BADAKEKARA</div>
+        <div class="fl-sub">CONSTRUCTION</div>
+        <p class="fl-desc">Two decades of building India's infrastructure — roads, bridges, dams. Delivered with precision, on time, every time. Trusted by government bodies and private clients alike.</p>
+        <div class="socials">
+          <a class="s-icon" href="#" aria-label="Facebook">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+          </a>
+          <a class="s-icon" href="#" aria-label="LinkedIn">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+          </a>
+          <a class="s-icon" href="#" aria-label="WhatsApp">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+          </a>
+        </div>
+      </div>
+      <div>
+        <p class="f-heading">Quick Links</p>
+        <ul class="f-links">
+          <li><a href="#hero">Home</a></li>
+          <li><a href="#about">About Us</a></li>
+          <li><a href="#projects">Projects</a></li>
+          <li><a href="#team">Our Team</a></li>
+          <li><a href="#faq">FAQ</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="f-heading">Contact Info</p>
+        <div class="f-ci"><span class="f-ci-icon">📍</span><span>Badakekara House, NH Bypass,<br>Kozhikode, Kerala — 673001</span></div>
+        <div class="f-ci"><span class="f-ci-icon">📞</span><span>+91 98765 43210</span></div>
+        <div class="f-ci"><span class="f-ci-icon">✉️</span><span>info@badakekaraconstruction.com</span></div>
+        <div class="f-ci"><span class="f-ci-icon">⏰</span><span>Mon – Sat: 9:00 AM – 6:00 PM</span></div>
+      </div>
+    </div>
+    <hr class="f-divider">
+    <div class="f-bottom">
+      <p class="f-copy">© 2025 <span>Badakekara Construction</span>. All rights reserved.</p>
+      <p class="f-copy" style="font-size:.72rem">Built with precision. Delivered with trust.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- BACK TO TOP -->
+<div id="btt">↑</div>
+
+<script>
+// HEADER + BACK TO TOP
+const hdr = document.getElementById('hdr');
+const btt = document.getElementById('btt');
+window.addEventListener('scroll', () => {
+  const y = window.scrollY;
+  hdr.classList.toggle('scrolled', y > 80);
+  btt.classList.toggle('show', y > 500);
+});
+btt.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+// HAMBURGER
+const ham = document.getElementById('ham');
+const mobMenu = document.getElementById('mobMenu');
+const mobClose = document.getElementById('mobClose');
+function openMob() { ham.classList.add('active'); mobMenu.classList.add('open'); document.body.style.overflow = 'hidden'; }
+function closeMob() { ham.classList.remove('active'); mobMenu.classList.remove('open'); document.body.style.overflow = ''; }
+ham.addEventListener('click', openMob);
+mobClose.addEventListener('click', closeMob);
+document.querySelectorAll('.mob-link').forEach(l => l.addEventListener('click', closeMob));
+
+// SCROLL REVEAL
+const revEls = document.querySelectorAll('.reveal');
+const ro = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+revEls.forEach(el => ro.observe(el));
+
+// COUNTER
+let counted = false;
+const statsEl = document.getElementById('stats');
+const co = new IntersectionObserver(entries => {
+  if (entries[0].isIntersecting && !counted) {
+    counted = true;
+    document.querySelectorAll('.counter').forEach(c => {
+      const target = +c.dataset.target;
+      const dur = 1800;
+      const step = target / (dur / 16);
+      let cur = 0;
+      const t = setInterval(() => {
+        cur = Math.min(cur + step, target);
+        c.textContent = Math.floor(cur);
+        if (cur >= target) clearInterval(t);
+      }, 16);
+    });
+  }
+}, { threshold: 0.4 });
+co.observe(statsEl);
+
+// FAQ ACCORDION
+document.querySelectorAll('.faq-item').forEach(item => {
+  item.querySelector('.faq-q').addEventListener('click', () => {
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => {
+      i.classList.remove('open');
+      i.querySelector('.faq-ans').style.maxHeight = null;
+    });
+    if (!isOpen) {
+      item.classList.add('open');
+      item.querySelector('.faq-ans').style.maxHeight = item.querySelector('.faq-ans').scrollHeight + 'px';
+    }
+  });
+});
+
+// CONTACT FORM
+document.getElementById('cForm').addEventListener('submit', e => {
+  e.preventDefault();
+  document.getElementById('cForm').style.display = 'none';
+  document.getElementById('fOk').style.display = 'block';
+});
+
+// SMOOTH SCROLL (offset for fixed header)
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const href = a.getAttribute('href');
+    if (href === '#') return;
+    const target = document.querySelector(href);
+    if (!target) return;
+    e.preventDefault();
+    window.scrollTo({ top: target.offsetTop - hdr.offsetHeight, behavior: 'smooth' });
+  });
+});
+</script>
+</body>
+</html>
